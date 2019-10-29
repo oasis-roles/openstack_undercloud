@@ -1,0 +1,61 @@
+- block:
+    - name: create images destination
+      file:
+        path: /home/stack/images
+        state: directory
+        owner: stack
+        mode: "0755"
+
+    - name: extract images
+      unarchive:
+        remote_src: true
+        dest: /home/stack/images
+        owner: stack
+        src: "{{ item }}"
+      with_items:
+        - /usr/share/rhosp-director-images/overcloud-full-latest-{{ openstack_undercloud_prepare_version }}.0.tar
+        - /usr/share/rhosp-director-images/ironic-python-agent-latest-{{ openstack_undercloud_prepare_version }}.0.tar
+
+    - name: read stackrc environment
+      shell: |
+        source /home/stack/stackrc
+        env
+      register: _stackrc
+      changed_when: false
+
+    - name: filter stackrc output
+      set_fact:
+        os_env_data: "{{ _stackrc.stdout | env_to_dict(only=openstack_undercloud_prepare_env_filters) }}"
+
+    - name: list image files
+      find:
+        paths: "{{ openstack_undercloud_prepare_image_path }}"
+        file_type: file
+      register: _image_files
+
+    - name: import images
+      command: openstack overcloud image upload --image-path {{ openstack_undercloud_prepare_image_path }}
+      ignore_errors: true
+      register: image_import
+      environment: "{{ os_env_data }}"
+      changed_when: false
+
+    # Necessary, some times, if the above command fails with duplicate imaages
+    - name: update imported images
+      command: openstack overcloud image upload --image-path {{ openstack_undercloud_prepare_image_path }} --update-existing
+      when: image_import.rc != 0
+      environment: "{{ os_env_data }}"
+  become: true
+  become_user: stack
+
+# Currently the version of openstacksdk that is shipped with OpenStack 13 in
+# RHEL is version 0.11. The os_image module in Ansible requires >= 0.12 to
+# operate. Thus, until we move past version 13, we need to do a workaround like
+# the "command" calls above
+#- name: import images
+#  os_image:
+#    name: "{{ item.path | basename }}"
+#    filename: "{{ item.path }}"
+#    state: present
+#  environment: "{{ os_env_data }}"
+#  with_items: "{{ _image_files.files }}"

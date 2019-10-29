@@ -1,0 +1,56 @@
+- block:
+    - name: create undercloud.conf
+      template:
+        src: undercloud.conf
+        dest: /home/stack/undercloud.conf
+        owner: stack
+        group: stack
+        mode: 0644
+
+    - name: install packages
+      package:
+        name: "{{ openstack_undercloud_prepare_packages }}"
+        state: present
+      register: _undercloud_pkg_install
+      retries: 3
+      until: _undercloud_pkg_install is success
+
+    - name: clean yum - workaround stale data
+      command: yum clean all
+
+    - name: yum repolist - workaround stale data
+      command: yum repolist
+
+    - name: create hiera_override.yaml
+      copy:
+        content: "nova::compute::ironic::max_concurrent_builds: 5"
+        dest: /home/stack/hiera_override.yaml
+        owner: stack
+        group: stack
+        mode: 0644
+  become: "{{ openstack_undercloud_prepare_become }}"
+  become_user: "{{ openstack_undercloud_prepare_become_user }}"
+
+- name: install undercloud
+  become: true
+  become_user: stack
+  command: openstack undercloud install
+
+- name: list running openstack services
+  become: "{{ openstack_undercloud_prepare_become }}"
+  become_user: "{{ openstack_undercloud_prepare_become_user }}"
+  command: systemctl list-units openstack-*
+  register: _list_openstack_services
+  changed_when: false
+
+- name: display running openstack services
+  debug:
+    var: _list_openstack_services.stdout
+
+- name: append CA bundles path to stackrc
+  become: true
+  become_user: stack
+  lineinfile:
+    dest: /home/stack/stackrc
+    line: export WEBSOCKET_CLIENT_CA_BUNDLE=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+    state: present

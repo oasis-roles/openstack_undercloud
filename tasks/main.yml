@@ -1,0 +1,11 @@
+- name: generate SSL certificates if not present
+  include_tasks: ssl.yml
+
+- name: upload SSL certificates
+  include_tasks: ssl_deploy.yml
+
+- name: install undercloud
+  include_tasks: undercloud.yml
+
+- name: obtain overcloud images
+  include_tasks: overcloud_images.yml

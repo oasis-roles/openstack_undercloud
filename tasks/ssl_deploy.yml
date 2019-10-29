@@ -1,0 +1,26 @@
+- name: upload openssl certificate
+  copy:
+    src: "{{ openstack_undercloud_prepare_ssl_certificate }}"
+    dest: /etc/pki/ca-trust/source/anchors
+  notify: ca trust extract
+
+- name: ensure path exists for Undercloud PEM
+  file:
+    path: /etc/pki/instack-certs/
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: create undercloud.pem
+  copy:
+    dest: /etc/pki/instack-certs/undercloud.pem
+    content: |
+      {{ lookup('file', openstack_undercloud_prepare_ssl_certificate) }}
+      {{ lookup('file', openstack_undercloud_prepare_ssl_key) }}
+    owner: root
+    group: root
+    mode: 0644
+
+- name: update CA trust if necessary
+  meta: flush_handlers
