@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.com/oasis-roles/openstack_undercloud_prepare.svg?branch=master)](https://travis-ci.com/oasis-roles/openstack_undercloud_prepare)
+[![Build Status](https://travis-ci.com/oasis-roles/openstack_undercloud.svg?branch=master)](https://travis-ci.com/oasis-roles/openstack_undercloud)
 
-openstack_undercloud_prepare
+openstack_undercloud
 ===========
 
-Basic description for openstack_undercloud_prepare
+Basic description for openstack_undercloud
 
 Requirements
 ------------
@@ -21,9 +21,9 @@ Currently the following variables are supported:
 
 ### General
 
-* `openstack_undercloud_prepare_become` - Default: true. If this role needs administrator
+* `openstack_undercloud_become` - Default: true. If this role needs administrator
   privileges, then use the Ansible become functionality (based off sudo).
-* `openstack_undercloud_prepare_become_user` - Default: root. If the role uses the become
+* `openstack_undercloud_become_user` - Default: root. If the role uses the become
   functionality for privilege escalation, then this is the name of the target
   user to change to.
 
@@ -36,9 +36,9 @@ Example Playbook
 ----------------
 
 ```yaml
-- hosts: openstack_undercloud_prepare-servers
+- hosts: openstack_undercloud-servers
   roles:
-    - role: oasis_roles.openstack_undercloud_prepare
+    - role: oasis_roles.openstack_undercloud
 ```
 
 License

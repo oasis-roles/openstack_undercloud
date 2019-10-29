@@ -1,4 +1,4 @@
 - name: ca trust extract
-  become: "{{ openstack_undercloud_prepare_become }}"
-  become_user: "{{ openstack_undercloud_prepare_become_user }}"
+  become: "{{ openstack_undercloud_become }}"
+  become_user: "{{ openstack_undercloud_become_user }}"
   command: update-ca-trust extract

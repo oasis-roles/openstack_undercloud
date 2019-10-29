@@ -9,7 +9,7 @@ lint:
   options:
     config-file: tests/yamllint.yml
 platforms:
-  - name: openstack_undercloud_prepare
+  - name: openstack_undercloud
     image: centos:7
     ## Remove 'image' above and uncomment the following to run systemd in Docker
     # image: centos/systemd

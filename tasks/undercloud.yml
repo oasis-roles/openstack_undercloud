@@ -9,7 +9,7 @@
 
     - name: install packages
       package:
-        name: "{{ openstack_undercloud_prepare_packages }}"
+        name: "{{ openstack_undercloud_packages }}"
         state: present
       register: _undercloud_pkg_install
       retries: 3
@@ -28,8 +28,8 @@
         owner: stack
         group: stack
         mode: 0644
-  become: "{{ openstack_undercloud_prepare_become }}"
-  become_user: "{{ openstack_undercloud_prepare_become_user }}"
+  become: "{{ openstack_undercloud_become }}"
+  become_user: "{{ openstack_undercloud_become_user }}"
 
 - name: install undercloud
   become: true
@@ -37,8 +37,8 @@
   command: openstack undercloud install
 
 - name: list running openstack services
-  become: "{{ openstack_undercloud_prepare_become }}"
-  become_user: "{{ openstack_undercloud_prepare_become_user }}"
+  become: "{{ openstack_undercloud_become }}"
+  become_user: "{{ openstack_undercloud_become_user }}"
   command: systemctl list-units openstack-*
   register: _list_openstack_services
   changed_when: false

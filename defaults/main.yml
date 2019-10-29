@@ -1,19 +1,19 @@
-#openstack_undercloud_prepare_version: 13
-openstack_undercloud_prepare_become: true
-openstack_undercloud_prepare_become_user: root
+#openstack_undercloud_version: 13
+openstack_undercloud_become: true
+openstack_undercloud_become_user: root
 
-openstack_undercloud_prepare_ssl_key_size: 2048
-openstack_undercloud_prepare_ssl_key_type: RSA
-openstack_undercloud_prepare_local_ip: "{{ ( ansible_default_ipv4.address + '/' + ansible_default_ipv4.netmask ) | ipaddr('network/prefix') }}"
-openstack_undercloud_prepare_public_host: "{{ ansible_default_ipv4.address }}"
-openstack_undercloud_prepare_admin_host: "{{ ansible_default_ipv4.address }}"
-openstack_undercloud_prepare_local_interface: "{{ ansible_default_ipv4.interface }}"
-openstack_undercloud_prepare_provision:
+openstack_undercloud_ssl_key_size: 2048
+openstack_undercloud_ssl_key_type: RSA
+openstack_undercloud_local_ip: "{{ ( ansible_default_ipv4.address + '/' + ansible_default_ipv4.netmask ) | ipaddr('network/prefix') }}"
+openstack_undercloud_public_host: "{{ ansible_default_ipv4.address }}"
+openstack_undercloud_admin_host: "{{ ansible_default_ipv4.address }}"
+openstack_undercloud_local_interface: "{{ ansible_default_ipv4.interface }}"
+openstack_undercloud_provision:
   gateway: 192.168.24.1
   cidr: 192.168.24.0/24
   masquerade: true
   dhcp_start: 192.168.24.2
   dhcp_end: 192.168.24.50
 
-openstack_undercloud_prepare_enabled_drivers: []
-openstack_undercloud_prepare_eanbled_hardware: []
+openstack_undercloud_enabled_drivers: []
+openstack_undercloud_eanbled_hardware: []

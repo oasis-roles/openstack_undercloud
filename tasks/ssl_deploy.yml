@@ -1,6 +1,6 @@
 - name: upload openssl certificate
   copy:
-    src: "{{ openstack_undercloud_prepare_ssl_certificate }}"
+    src: "{{ openstack_undercloud_ssl_certificate }}"
     dest: /etc/pki/ca-trust/source/anchors
   notify: ca trust extract
 
@@ -16,8 +16,8 @@
   copy:
     dest: /etc/pki/instack-certs/undercloud.pem
     content: |
-      {{ lookup('file', openstack_undercloud_prepare_ssl_certificate) }}
-      {{ lookup('file', openstack_undercloud_prepare_ssl_key) }}
+      {{ lookup('file', openstack_undercloud_ssl_certificate) }}
+      {{ lookup('file', openstack_undercloud_ssl_key) }}
     owner: root
     group: root
     mode: 0644

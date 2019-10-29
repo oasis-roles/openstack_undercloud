@@ -1,13 +1,13 @@
-openstack_undercloud_prepare_packages:
+openstack_undercloud_packages:
   - python-tripleoclient
   - python-ovirt-engine-sdk4
   - rhosp-director-images
   - rhosp-director-images-ipa
 
-openstack_undercloud_prepare_undercloud_pem: /etc/pki/instack-certs/undercloud.pem
-openstack_undercloud_prepare_image_path: /home/stack/images
+openstack_undercloud_undercloud_pem: /etc/pki/instack-certs/undercloud.pem
+openstack_undercloud_image_path: /home/stack/images
 
-openstack_undercloud_prepare_env_filters:
+openstack_undercloud_env_filters:
   - OS_.*
   - NOVA_.*
   - IRONIC_.*

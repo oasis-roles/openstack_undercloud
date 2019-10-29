@@ -13,8 +13,8 @@
         owner: stack
         src: "{{ item }}"
       with_items:
-        - /usr/share/rhosp-director-images/overcloud-full-latest-{{ openstack_undercloud_prepare_version }}.0.tar
-        - /usr/share/rhosp-director-images/ironic-python-agent-latest-{{ openstack_undercloud_prepare_version }}.0.tar
+        - /usr/share/rhosp-director-images/overcloud-full-latest-{{ openstack_undercloud_version }}.0.tar
+        - /usr/share/rhosp-director-images/ironic-python-agent-latest-{{ openstack_undercloud_version }}.0.tar
 
     - name: read stackrc environment
       shell: |
@@ -25,16 +25,16 @@
 
     - name: filter stackrc output
       set_fact:
-        os_env_data: "{{ _stackrc.stdout | env_to_dict(only=openstack_undercloud_prepare_env_filters) }}"
+        os_env_data: "{{ _stackrc.stdout | env_to_dict(only=openstack_undercloud_env_filters) }}"
 
     - name: list image files
       find:
-        paths: "{{ openstack_undercloud_prepare_image_path }}"
+        paths: "{{ openstack_undercloud_image_path }}"
         file_type: file
       register: _image_files
 
     - name: import images
-      command: openstack overcloud image upload --image-path {{ openstack_undercloud_prepare_image_path }}
+      command: openstack overcloud image upload --image-path {{ openstack_undercloud_image_path }}
       ignore_errors: true
       register: image_import
       environment: "{{ os_env_data }}"
@@ -42,7 +42,7 @@
 
     # Necessary, some times, if the above command fails with duplicate imaages
     - name: update imported images
-      command: openstack overcloud image upload --image-path {{ openstack_undercloud_prepare_image_path }} --update-existing
+      command: openstack overcloud image upload --image-path {{ openstack_undercloud_image_path }} --update-existing
       when: image_import.rc != 0
       environment: "{{ os_env_data }}"
   become: true
