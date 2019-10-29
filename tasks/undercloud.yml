@@ -36,6 +36,9 @@
   become_user: stack
   command: openstack undercloud install
   changed_when: false
+  register: _install_undercloud
+  retries: 2
+  until: _instal_undercloud is success
 
 - name: list running openstack services
   become: "{{ openstack_undercloud_become }}"
