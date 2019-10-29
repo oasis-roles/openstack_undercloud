@@ -16,6 +16,7 @@
         openssl req -new -x509 -key "{{ openstack_undercloud_ssl_key }}"
         -out "{{ openstack_undercloud_ssl_certificate }}"
         -days 365
-        -subj "/C=US/ST=NC/L=Raleigh/O=Red Hat/OU=QE/CN={{ openstack_undercloud_public_host }}"
+        -subj "/C=US/ST=NC/L=Raleigh/O=Red Hat/OU=QE/CN={{
+        openstack_undercloud_public_host }}"
       when: _generate_ssl_key is changed or not _ssl_certificate.stat.exists
   delegate_to: localhost

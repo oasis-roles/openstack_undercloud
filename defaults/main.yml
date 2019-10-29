@@ -4,7 +4,9 @@ openstack_undercloud_become_user: root
 
 openstack_undercloud_ssl_key_size: 2048
 openstack_undercloud_ssl_key_type: RSA
-openstack_undercloud_local_ip: "{{ ( ansible_default_ipv4.address + '/' + ansible_default_ipv4.netmask ) | ipaddr('network/prefix') }}"
+openstack_undercloud_local_ip: |-
+  {{ ( ansible_default_ipv4.address + '/' + ansible_default_ipv4.netmask )
+  | ipaddr('network/prefix') }}
 openstack_undercloud_public_host: "{{ ansible_default_ipv4.address }}"
 openstack_undercloud_admin_host: "{{ ansible_default_ipv4.address }}"
 openstack_undercloud_local_interface: "{{ ansible_default_ipv4.interface }}"

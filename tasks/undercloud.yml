@@ -35,6 +35,7 @@
   become: true
   become_user: stack
   command: openstack undercloud install
+  changed_when: false
 
 - name: list running openstack services
   become: "{{ openstack_undercloud_become }}"
@@ -52,5 +53,6 @@
   become_user: stack
   lineinfile:
     dest: /home/stack/stackrc
+    # yamllint disable-line rule:line-length
     line: export WEBSOCKET_CLIENT_CA_BUNDLE=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
     state: present
