@@ -39,8 +39,8 @@
   register: _install_undercloud
   retries: 2
   until: _install_undercloud is success
-  async: 14400 # 4 hours
-  poll: 300 # every 5 minutes
+  async: 14400  # 4 hours
+  poll: 300  # every 5 minutes
 
 - name: list running openstack services
   become: "{{ openstack_undercloud_become }}"
