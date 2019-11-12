@@ -4,7 +4,7 @@ galaxy_info:
     Installs the undercloud for a RHOSP instance onto a given host
   company: Red Hat, Inc.
   license: GPLv3
-  min_ansible_version: 2.4
+  min_ansible_version: 2.8
   platforms:
     - name: EL
       versions:

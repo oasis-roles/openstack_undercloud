@@ -2,7 +2,7 @@
     - name: create undercloud.conf
       template:
         src: undercloud.conf
-        dest: /home/stack/undercloud.conf
+        dest: "{{ openstack_undercloud_prefix }}/undercloud.conf"
         owner: stack
         group: stack
         mode: 0644
@@ -24,7 +24,7 @@
     - name: create hiera_override.yaml
       copy:
         content: "nova::compute::ironic::max_concurrent_builds: 5"
-        dest: /home/stack/hiera_override.yaml
+        dest: "{{ openstack_undercloud_prefix }}/hiera_override.yaml"
         owner: stack
         group: stack
         mode: 0644
@@ -39,6 +39,8 @@
   register: _install_undercloud
   retries: 2
   until: _install_undercloud is success
+  async: 14400 # 4 hours
+  poll: 300 # every 5 minutes
 
 - name: list running openstack services
   become: "{{ openstack_undercloud_become }}"
@@ -54,8 +56,8 @@
 - name: append CA bundles path to stackrc
   become: true
   become_user: stack
-  lineinfile:
-    dest: /home/stack/stackrc
+  blockinfile:
+    dest: "{{ openstack_undercloud_prefix }}/stackrc"
     # yamllint disable-line rule:line-length
-    line: export WEBSOCKET_CLIENT_CA_BUNDLE=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+    block: export WEBSOCKET_CLIENT_CA_BUNDLE=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
     state: present

@@ -1,1 +1,5 @@
+- greg_hellings.sudoers
+- oasis_roles.hostname
+- oasis_roles.molecule_openstack_ci
 - oasis_roles.rhsm
+- oasis_roles.users_and_groups

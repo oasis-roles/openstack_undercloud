@@ -1,7 +1,7 @@
 - block:
     - name: create images destination
       file:
-        path: /home/stack/images
+        path: "{{ openstack_undercloud_prefix }}/images"
         state: directory
         owner: stack
         mode: "0755"
@@ -9,7 +9,7 @@
     - name: extract images
       unarchive:
         remote_src: true
-        dest: /home/stack/images
+        dest: "{{ openstack_undercloud_prefix }}/images"
         owner: stack
         src: "{{ item }}"
       with_items:
@@ -20,7 +20,7 @@
 
     - name: read stackrc environment
       shell: |
-        source /home/stack/stackrc
+        source {{ openstack_undercloud_prefix }}/stackrc
         env
       register: _stackrc
       changed_when: false
@@ -45,7 +45,7 @@
       environment: "{{ os_env_data }}"
       changed_when: false
 
-    # Necessary, some times, if the above command fails with duplicate imaages
+    # Necessary, some times, if the above command fails with duplicate images
     - name: update imported images
       command: >-
         openstack overcloud image upload

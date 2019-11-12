@@ -2,4 +2,24 @@
   hosts: all
   roles:
     - role: openstack_undercloud
-  post_tasks: []
+      openstack_undercloud_version: "{{ openstack_version }}"
+  vars:
+    tmp: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}"
+    openstack_undercloud_ssl_key: "{{ tmp }}/key.key"
+    openstack_undercloud_ssl_certificate: "{{ tmp }}/cert.pem"
+    openstack_undercloud_enabled_hardware: []
+    openstack_undercloud_public_host: "{{ ansible_eth1.ipv4.address }}"
+    openstack_undercloud_admin_host: "{{ ansible_eth1.ipv4.address }}"
+    openstack_undercloud_local_interface: eth1
+    openstack_undercloud_inspection_iprange:
+      - "{{ ansible_eth1.ipv4.address | ipmath(6) }}"
+      - "{{ ansible_eth1.ipv4.address | ipmath(10) }}"
+    openstack_undercloud_provision:
+      gateway: "{{ ansible_eth1.ipv4.address }}"
+      cidr: "{{ openstack_undercloud_local_ip }}"
+      masquerade: true
+      dhcp_start: "{{ ansible_eth1.ipv4.address | ipmath(1) }}"
+      dhcp_end: "{{ ansible_eth1.ipv4.address | ipmath(5) }}"
+    openstack_undercloud_local_ip: |-
+      {{ ( ansible_eth1.ipv4.address + '/' + ansible_eth1.ipv4.netmask )
+      | ipaddr('network/prefix') }}

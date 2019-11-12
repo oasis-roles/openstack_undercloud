@@ -3,20 +3,17 @@ dependency:
   options:
     role-file: molecule/shared/requirements.yml
 driver:
-  name: docker
+  name: openstack
 lint:
   name: yamllint
   options:
     config-file: tests/yamllint.yml
 platforms:
   - name: openstack_undercloud
-    image: centos:7
-    ## Remove 'image' above and uncomment the following to run systemd in Docker
-    # image: centos/systemd
-    # privileged: true
-    # command: /usr/lib/systemd/systemd --system
-    # volumes:
-    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    flavor: ci.m1.xlarge
+    nics:
+      - net-name: provider_net_cci_5
+      - net-name: provider_net_cci_1
 provisioner:
   name: ansible
   lint:
@@ -28,6 +25,12 @@ provisioner:
   config_options:
     defaults:
       stdout_callback: yaml
+  inventory:
+    group_vars:
+      all:
+        openstack_version: "13"
+        base_ip_address: 192.168.24.1
+        base_cidr_length: "24"
 verifier:
   name: testinfra
   options:

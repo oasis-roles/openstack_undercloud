@@ -11,11 +11,11 @@ openstack_undercloud_public_host: "{{ ansible_default_ipv4.address }}"
 openstack_undercloud_admin_host: "{{ ansible_default_ipv4.address }}"
 openstack_undercloud_local_interface: "{{ ansible_default_ipv4.interface }}"
 openstack_undercloud_provision:
-  gateway: 192.168.24.1
-  cidr: 192.168.24.0/24
+  gateway: "{{ ansible_default_ipv4.address }}"
+  cidr: "{{ openstack_undercloud_local_ip }}"
   masquerade: true
-  dhcp_start: 192.168.24.2
-  dhcp_end: 192.168.24.50
+  dhcp_start: "{{ ansible_default_ipv4.address | ipmath(1) }}"
+  dhcp_end: "{{ ansible_default_ipv4.address | ipmath(5) }}"
 
 openstack_undercloud_enabled_drivers: []
 openstack_undercloud_eanbled_hardware: []
