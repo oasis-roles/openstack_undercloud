@@ -31,6 +31,20 @@ provisioner:
         openstack_version: "13"
         base_ip_address: 192.168.24.1
         base_cidr_length: "24"
+scenario:
+  test_sequence:  # omit idempotence
+    - lint
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - side_effect
+    - verify
+    - cleanup
+    - destroy
 verifier:
   name: testinfra
   options:

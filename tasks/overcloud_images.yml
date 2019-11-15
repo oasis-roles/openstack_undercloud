@@ -53,6 +53,14 @@
         --update-existing
       when: image_import.rc != 0
       environment: "{{ os_env_data }}"
+
+    - name: list available subnets
+      command: openstack subnet list
+      environment: "{{ os_env_data }}"
+      register: list_subnets
+
+    - debug:
+        var: list_subnets.stdout
   become: true
   become_user: stack
 
