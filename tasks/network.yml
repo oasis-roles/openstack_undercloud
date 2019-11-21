@@ -1,0 +1,37 @@
+# Once we move to a version of OpenStack that comes with
+# openstacksdk >= 0.12 we can ditch these command-parsing
+# parlor tricks in favor of the openstack modules that
+# come in Ansible
+- block:
+    - name: list available subnets
+      command: openstack subnet list
+      environment: "{{ os_env_data }}"
+      register: list_subnets
+
+    # Filters the output, finds the line identifying the control plane subnet
+    # splits it on spaces, and extracts the ID field from the output
+    - name: find the ctrlplane subnet
+      set_fact:
+        _ctlplane_id: >-
+          {{ ( list_subnets.stdout_lines |
+          select("search", "ctlplane-subnet") |
+          list | first ).split(" ")[1] }}
+
+    - name: set the nameserver for control plane
+      command: >-
+        openstack subnet set
+        --dns-nameserver
+        {{ openstack_undercloud_name_servers | join(' --dns-nameserver ') }}
+        {{ _ctlplane_id }}
+      environment: "{{ os_env_data }}"
+
+    - name: verify that nameservers are updated
+      command: openstack subnet show {{ _ctlplane_id }}
+      environment: "{{ os_env_data }}"
+      register: _nameserver_updated
+
+    - name: nameserver output
+      debug:
+        var: _nameserver_updated.stdout
+  become: true
+  become_user: stack

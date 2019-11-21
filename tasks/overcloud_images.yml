@@ -1,10 +1,13 @@
 - block:
     - name: create images destination
       file:
-        path: "{{ openstack_undercloud_prefix }}/images"
+        path: "{{ item }}"
         state: directory
         owner: stack
         mode: "0755"
+      with_items:
+        - "{{ openstack_undercloud_prefix }}/images"
+        - "{{ openstack_undercloud_prefix }}/templates"
 
     - name: extract images
       unarchive:
@@ -20,6 +23,7 @@
 
     - name: read stackrc environment
       shell: |
+        set -e
         source {{ openstack_undercloud_prefix }}/stackrc
         env
       register: _stackrc
@@ -54,13 +58,30 @@
       when: image_import.rc != 0
       environment: "{{ os_env_data }}"
 
-    - name: list available subnets
-      command: openstack subnet list
+    - name: configure overcloud containe image source - undercloud as local
+      command: >-
+        openstack overcloud container image prepare
+        --namespace="{{ openstack_undercloud_image_registry }}"
+        --push-destination="{{ openstack_undercloud_public_host }}:8787"
+        --prefix=openstack-
+        --tag=latest
+        -e "{{ openstack_undercloud_heat_templates
+            }}/services-docker/ironic.yaml"
+        -e "{{ openstack_undercloud_heat_templates
+            }}/services-docker/octavia.yaml"
+        -e "{{ openstack_undercloud_heat_templates
+            }}/ceph-ansible/ceph-ansible.yaml"
+        --output-env-file="{{ openstack_undercloud_prefix
+            }}/templates/overcloud_images.yaml"
+        --output-images-file "{{ openstack_undercloud_prefix
+            }}/local_registry_images.yaml"
       environment: "{{ os_env_data }}"
-      register: list_subnets
 
-    - debug:
-        var: list_subnets.stdout
+    - name: pull container images
+      command: >-
+        openstack overcloud container image upload
+        --config-file "{{ openstack_undercloud_prefix
+            }}/local_registry_images.yaml"
   become: true
   become_user: stack
 

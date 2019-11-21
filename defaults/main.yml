@@ -1,4 +1,5 @@
 #openstack_undercloud_version: 13
+#openstack_undercloud_name_servers: []
 openstack_undercloud_become: true
 openstack_undercloud_become_user: root
 
@@ -19,3 +20,5 @@ openstack_undercloud_provision:
 
 openstack_undercloud_enabled_drivers: []
 openstack_undercloud_eanbled_hardware: []
+openstack_undercloud_image_registry: >-
+  registry.access.redhat.com/rhosp{{ openstack_undercloud_version }}

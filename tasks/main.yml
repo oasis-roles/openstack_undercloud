@@ -1,3 +1,8 @@
+- name: verify
+  assert:
+    that:
+      - ( openstack_undercloud_name_servers | length ) > 0
+
 - name: generate SSL certificates if not present
   include_tasks: ssl.yml
 
@@ -9,3 +14,6 @@
 
 - name: obtain overcloud images
   include_tasks: overcloud_images.yml
+
+- name: configure network
+  include_tasks: network.yml

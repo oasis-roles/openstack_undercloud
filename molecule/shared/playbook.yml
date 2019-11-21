@@ -23,3 +23,6 @@
     openstack_undercloud_local_ip: |-
       {{ ( ansible_eth1.ipv4.address + '/' + ansible_eth1.ipv4.netmask )
       | ipaddr('network/prefix') }}
+    openstack_undercloud_name_servers:
+      - 10.5.30.160
+      - 10.11.5.19

@@ -7,6 +7,8 @@ openstack_undercloud_packages:
 openstack_undercloud_prefix: /home/stack
 openstack_undercloud_undercloud_pem: /etc/pki/instack-certs/undercloud.pem
 openstack_undercloud_image_path: "{{ openstack_undercloud_prefix }}/images"
+openstack_undercloud_heat_templates: |-
+  /usr/share/openstack-tripleo-heat-template/environments/
 
 openstack_undercloud_env_filters:
   - OS_.*
